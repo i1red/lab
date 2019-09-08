@@ -165,16 +165,3 @@ class PriorityQueueList:
         self._head = self._head.nx
         self._length -= 1
         return pair
-
-
-if __name__ == '__main__':
-    a = [('dvv', 'wvv'), ('wv', 'asa'), ('dvv', 'wvv'), ('wv', 'asa'), ('dvv', 'wvv'), ('wv', 'asa'), ('dvv', 'wvv'), ('wv', 'asa')]
-    b = [('dvv', 'wvv'), ('wv', 'asa')]
-
-    qu = PriorityQueueBST(a)
-
-    for pr, v in qu:
-        print(pr, v)
-        pr = 82
-
-    print(qu)
