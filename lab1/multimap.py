@@ -1,6 +1,5 @@
 from collections import deque
 
-
 class MultiMap:
     """Mapping class based on AVL Tree.
 
