@@ -66,7 +66,8 @@ class AVLTree:
                 tmp = tmp.left
             else:
                 cur = node_stack.pop()
-                yield (cur.key, cur.values)
+                for value in cur.values:
+                    yield (cur.key, value)
                 tmp = cur.right
 
     def _reset_parent(self, prev_son, new_son, parent):
@@ -143,7 +144,7 @@ class AVLTree:
     def popleft(self):
         if self._root is None:
             raise KeyError('Pop from empty tree')
-        elif self._root.left is None:
+        if self._root.left is None:
             key_value = (self._root.key, self._root.values.popleft())
             if len(self._root.values) == 0:
                 self._root = self._root.right
@@ -163,61 +164,67 @@ class AVLTree:
 
 
 
-def get_height(node):
-    return 0 if node is None else max(get_height(node.left), get_height(node.right)) + 1
+class SortedKeyList:
+    class Node:
+        def __init__(self, key, value, nx=None):
+            self.key = key
+            self.value = value
+            self.nx = nx
 
+    def __init__(self):
+        self._head = None
+        self._length = 0
 
-def check_balance(tree):
-    node_stack = collections.deque()
-    tmp = tree._root
-    while tmp is not None or len(node_stack) > 0:
-        if tmp is not None:
-            node_stack.append(tmp)
-            tmp = tmp.left
+    def __len__(self):
+        return self._length
+
+    def __iter__(self):
+        tmp = self._head
+        while tmp is not None:
+            yield (tmp.key, tmp.value)
+            tmp = tmp.nx
+
+    def insert(self, key, value):
+        if self._head is None:
+            self._head = SortedKeyList.Node(key, value)
+        elif self._head.key > key:
+            self._head = SortedKeyList.Node(key, value, self._head)
         else:
-            cur = node_stack.pop()
-            if cur.height != get_height(cur) or abs(get_height(cur.left) - get_height(cur.right)) >= 2:
-                return False
-            tmp = cur.right
+            tmp = self._head
+            while tmp.nx is not None and tmp.nx.key <= key:
+                tmp = tmp.nx
+            tmp.nx = SortedKeyList.Node(key, value, tmp.nx)
 
-    return True
+        self._length += 1
 
+    def popleft(self):
+        if self._head is None:
+            raise KeyError('Pop from empty list')
 
+        key_value = (self._head.key, self._head.value)
+        self._head = self._head.nx
+        self._length -= 1
+        return key_value
 
 
 import random
 
-a = AVLTree()
-for _ in range(100):
-    a.insert(random.randint(-40, 40), random.randint(-500, 500))
-
+a = SortedKeyList()
 print(len(a))
-print(check_balance(a))
-
-for _ in range(80):
-    print(a.popleft())
-
-print(len(a))
-print(check_balance(a))
-
-for _ in range(20):
-    a.insert(random.randint(-40, 40), random.randint(-500, 500))
-
-print(len(a))
-print(check_balance(a))
-
-for _ in range(40):
-    print(a.popleft())
-
-print(len(a))
-print(check_balance(a))
-
-print(len(a))
-count = 0
-for i, v in a:
-    print(i, v, end=';  ')
-    count += len(v)
+for _ in range(30):
+    key_val = (random.randint(-10, 10), random.randint(-300, 300))
+    print(key_val, end='  ')
+    a.insert(*key_val)
 
 print()
-print(count)
+for i in a:
+    print(i, end='  ')
+print()
+print(len(a))
+
+while len(a) > 0:
+    print(a.popleft(), end='  ')
+
+print()
+print(len(a))
 
