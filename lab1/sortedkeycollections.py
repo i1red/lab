@@ -207,24 +207,3 @@ class SortedKeyList:
         return key_value
 
 
-import random
-
-a = SortedKeyList()
-print(len(a))
-for _ in range(30):
-    key_val = (random.randint(-10, 10), random.randint(-300, 300))
-    print(key_val, end='  ')
-    a.insert(*key_val)
-
-print()
-for i in a:
-    print(i, end='  ')
-print()
-print(len(a))
-
-while len(a) > 0:
-    print(a.popleft(), end='  ')
-
-print()
-print(len(a))
-
