@@ -5,7 +5,7 @@ class AVLTree:
     class Node:
         def __init__(self, key, value, left=None, right=None):
             self.key = key
-            self.values = [value]
+            self.values = collections.deque([value])
             self.left = left
             self.right = right
             self.height = 1
@@ -49,7 +49,6 @@ class AVLTree:
                 else:
                     self._parent._right = None
                 self._parent = None
-
 
     def __init__(self):
         self._root = None
@@ -141,6 +140,27 @@ class AVLTree:
 
         self._length += 1
 
+    def popleft(self):
+        if self._root is None:
+            raise KeyError('Pop from empty tree')
+        elif self._root.left is None:
+            key_value = (self._root.key, self._root.values.popleft())
+            if len(self._root.values) == 0:
+                self._root = self._root.right
+        else:
+            tmp = self._root
+            while tmp.left.left is not None:
+                tmp = tmp.left
+
+            key_value = (tmp.left.key, tmp.left.values.popleft())
+            if len(tmp.left.values) == 0:
+                tmp.left = tmp.left.right
+                tmp.update_height()
+                self._fix_balance(tmp)
+
+        self._length -= 1
+        return key_value
+
 
 
 def get_height(node):
@@ -168,14 +188,36 @@ def check_balance(tree):
 import random
 
 a = AVLTree()
-for _ in range(50):
-    a.insert(random.randint(-20, 20), random.randint(-500, 500))
+for _ in range(100):
+    a.insert(random.randint(-40, 40), random.randint(-500, 500))
+
+print(len(a))
+print(check_balance(a))
+
+for _ in range(80):
+    print(a.popleft())
+
+print(len(a))
+print(check_balance(a))
+
+for _ in range(20):
+    a.insert(random.randint(-40, 40), random.randint(-500, 500))
+
+print(len(a))
+print(check_balance(a))
+
+for _ in range(40):
+    print(a.popleft())
+
+print(len(a))
+print(check_balance(a))
 
 print(len(a))
 count = 0
 for i, v in a:
     print(i, v, end=';  ')
     count += len(v)
-print('\n', count)
 
-print(check_balance(a))
+print()
+print(count)
+
