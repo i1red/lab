@@ -5,10 +5,6 @@ import datetime
 
 Book = namedtuple('Book', ['title', 'authors', 'release_date', 'size', 'annotation'])
 
-a = Book('xxx', ('hh', 'hl'), datetime.date(1211, 10, 23), 2121, 'very long')
-b = Book('xa', ('hh', 'hl'), datetime.date(1988, 5, 9), 221, 'very long')
-
-
 class CharacterRole(Enum):
     FLAT = 0
     SECONDARY = 1
@@ -51,9 +47,3 @@ class BookCharacter:
     def serialize_books(self):
         return [book for book, role in self._reffered_books
                 if role == CharacterRole.SECONDARY or role == CharacterRole.MAIN]
-
-
-
-pedro = BookCharacter(['Pedro'], [(a, CharacterRole.MAIN), (b, CharacterRole.SECONDARY)])
-
-print(pedro.serialize_books())
