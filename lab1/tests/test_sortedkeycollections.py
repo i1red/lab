@@ -54,6 +54,23 @@ class TestAVLTree(TestSortedKeyList):
     def setUp(self):
         self.test_class = AVLTree
 
+    def test_balance(self):
+        tree = AVLTree()
+        for _ in range(50):
+            tree.insert(random.randint(-100, 100), random.randint(-500, 500))
+
+        for _ in range(40):
+            tree.popleft()
+
+        for i in range(20):
+            tree.insert(i, random.randint(-900, 900))
+
+        for node in tree.node_iter():
+            lh, rh = node.left_tree_height(), node.right_tree_height()
+            height = max(lh, rh) + 1
+            self.assertEqual(node.height, height)
+            self.assertGreater(2, abs(lh - rh))
+
 
 if __name__ == '__main__':
     unittest.main()

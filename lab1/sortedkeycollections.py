@@ -50,6 +50,13 @@ class AVLTree:
                     self._parent._right = None
                 self._parent = None
 
+        #those methods are used only for testing balance
+        def left_tree_height(self):
+            return 0 if self.left is None else (max(self.left.left_tree_height(), self.left.right_tree_height()) + 1)
+
+        def right_tree_height(self):
+            return 0 if self.right is None else (max(self.right.left_tree_height(), self.right.right_tree_height()) + 1)
+
     def __init__(self):
         self._root = None
         self._length = 0
@@ -58,6 +65,13 @@ class AVLTree:
         return self._length
 
     def __iter__(self):
+        for node in self.node_iter():
+            for value in node.values:
+                yield (node.key, value)
+
+    #this method allows to test balance using Node.left_tree_height, Node.right_tree_height
+    #without ability to change tree structure
+    def node_iter(self):
         node_stack = collections.deque()
         tmp = self._root
         while tmp is not None or len(node_stack) > 0:
@@ -66,8 +80,7 @@ class AVLTree:
                 tmp = tmp.left
             else:
                 cur = node_stack.pop()
-                for value in cur.values:
-                    yield (cur.key, value)
+                yield cur
                 tmp = cur.right
 
     def _reset_parent(self, prev_son, new_son, parent):
@@ -161,7 +174,6 @@ class AVLTree:
 
         self._length -= 1
         return key_value
-
 
 
 class SortedKeyList:
