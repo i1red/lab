@@ -1,12 +1,8 @@
 from collections import namedtuple
 from enum import Enum
 import reprlib
-import datetime
 
-Book = namedtuple('Book', ['title', 'authors', 'release_date', 'size', 'annotation'])
-
-a = Book('xxx', ('hh', 'hl'), datetime.date(1211, 10, 23), 2121, 'very long')
-b = Book('xa', ('hh', 'hl'), datetime.date(1988, 5, 9), 221, 'very long')
+Book = namedtuple('Book', ['title', 'authors', 'release_year', 'size', 'annotation'])
 
 
 class CharacterRole(Enum):
@@ -16,44 +12,33 @@ class CharacterRole(Enum):
 
 
 class BookCharacter:
-    def __init__(self, names: list, reffered_books: list):
+    def __init__(self, names: list, referred_books: list):
         self._names = list(names)
-        self._reffered_books = [(book, role) for book, role in reffered_books]
-
+        self._referred_books = [(book, role) for book, role in referred_books]
 
     def __repr__(self):
-        return f'BookCharacter({reprlib.repr(self._names)}, {reprlib.repr(self._reffered_books)})'
-
+        special_repr = reprlib.Repr()
+        special_repr.maxlist = 2
+        return f'BookCharacter({special_repr.repr(self._names)}, {special_repr.repr(self._referred_books)})'
 
     def __str__(self):
-        ref_books_str = [f'''"{book.title}" by {', '.join(book.authors)}'''  for book, role in self._reffered_books]
-        return f"Book character, known as {', '.join(self.names)}. Reffered books: {'; '.join(ref_books_str)}"
-
+        ref_books_str = [f'''"{book.title}" by {', '.join(book.authors)}''' for book, role in self._referred_books]
+        return f"Book character, known as {', '.join(self.names)}. Referred books: {'; '.join(ref_books_str)}"
 
     @property
     def names(self):
         return list(self._names)
 
-
     @property
-    def reffered_books(self):
-        return list(self._reffered_books)
-
+    def referred_books(self):
+        return list(self._referred_books)
 
     def add_name(self, name: str):
         self._names.append(name)
 
-
     def add_book(self, reffered_book: Book, role):
-        self._reffered_books.append((reffered_book, role))
-
+        self._referred_books.append((reffered_book, role))
 
     def serialize_books(self):
-        return [book for book, role in self._reffered_books
+        return [book for book, role in self._referred_books
                 if role == CharacterRole.SECONDARY or role == CharacterRole.MAIN]
-
-
-
-pedro = BookCharacter(['Pedro'], [(a, CharacterRole.MAIN), (b, CharacterRole.SECONDARY)])
-
-print(pedro.serialize_books())

@@ -49,10 +49,10 @@ class TestSortedKeyList(unittest.TestCase):
         collection = self.test_class()
         self.assertRaises(KeyError, lambda: collection.popleft())
 
+
 class TestAVLTree(TestSortedKeyList):
     def setUp(self):
         self.test_class = AVLTree
-
 
 
 if __name__ == '__main__':

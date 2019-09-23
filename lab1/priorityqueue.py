@@ -1,17 +1,17 @@
 import reprlib
-import lab1.sortedkeycollections as kscollections
+import lab1.sortedkeycollections as skcollections
 import queue
 
 
 class PriorityQueue:
-    def __init__(self, pairs=None, container=kscollections.AVLTree):
+    def __init__(self, pairs=None, container=skcollections.AVLTree):
         self.container = container()
         if pairs is not None:
             for pair in pairs:
                 self.put(pair)
 
-    def __len__(self):
-        return len(self.container)
+    def __bool__(self):
+        return bool(len(self.container))
 
     def __repr__(self):
         container_type, container_module = self.container.__class__.__name__, self.container.__class__.__module__
