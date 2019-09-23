@@ -1,7 +1,6 @@
 from collections import namedtuple
 from enum import Enum
 import reprlib
-import datetime
 
 Book = namedtuple('Book', ['title', 'authors', 'release_date', 'size', 'annotation'])
 
