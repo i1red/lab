@@ -14,10 +14,8 @@ class PriorityQueue:
         return bool(len(self.container))
 
     def __repr__(self):
-        container_type, container_module = self.container.__class__.__name__, self.container.__class__.__module__
-        container_name = ('' if container_module is None or container_module == str.__class__.__module__
-                          else container_module + '.') + container_type
-        return f'PriorityQueue({reprlib.repr(list(iter(self.container)))}, {container_name})'
+        container_type = self.container.__class__.__name__
+        return f'PriorityQueue({reprlib.repr(list(iter(self.container)))}, {container_type})'
 
     def put(self, pair):
         self.container.insert(*pair)
