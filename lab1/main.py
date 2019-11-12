@@ -2,6 +2,14 @@ from priorityqueue import PriorityQueue
 from random import randint
 from bookcharacter import *
 
+
+#1st list 5th task: priority queue ***
+#Based on sorted list; AVL tree - additional **
+#Priority queue adapts cantainer with insert and popleft methods
+#2nd list 10th task: books and book characters ***
+#Using unit testing
+
+
 if __name__ == '__main__':
     qu = PriorityQueue()
 
