@@ -24,3 +24,11 @@ class MoveFileError(FileSystemError):
 
 class MoveToTrashError(FileSystemError):
     pass
+
+
+class CreateFolderError(FileSystemError):
+    pass
+
+
+class CreateFileError(FileSystemError):
+    pass
