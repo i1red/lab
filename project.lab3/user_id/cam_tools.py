@@ -29,15 +29,17 @@ def detect_face(img):
 def camera_read(frames_limit: int = 0, time_limit: float = 0, show_frames=True):
     cap = cv.VideoCapture(config.DEFAULT_CAMERA)
 
-    unlim_frames = True if frames_limit > 0 else False
-    unlim_time = True if time_limit > 0 else False
+    unlim_frames = False if frames_limit > 0 else True
+    unlim_time = False if time_limit > 0 else True
 
     frame_count, time_start = 0, time.perf_counter()
 
-    while (unlim_frames or frame_count < frames_limit) and (unlim_time or time.perf_counter() - time_start > 0):
+    while (unlim_frames or frame_count < frames_limit) and (unlim_time or time.perf_counter() - time_start < time_limit):
         _, frame = cap.read()
 
         yield frame
+
+        frame_count += 1
 
         if show_frames:
             faces = face_positions(frame)

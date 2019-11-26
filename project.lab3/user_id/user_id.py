@@ -34,15 +34,28 @@ class UserID:
             raise FileExistsError(f'Username {username} exists already')
 
     def has_recognizer(self):
-        pass
+        return self._recognizer is not None
 
     def remove_recognizer(self):
         self._recognizer = None
+        os.remove(self._trainer_file)
+
+    def create_recognizer(self, training=None):
+        if self._recognizer is not None:
+            raise BaseException
+
+        self._recognizer = config.CREATE_RECOGNIZER()
+
+        if training is not None:
+            self.update_recognizer(training)
 
     def update_recognizer(self, training: 'list of 2d arrays'):
+        if self._recognizer is None:
+            raise BaseException
+
         ids = np.array([0 for _ in range(len(training))])
         self._recognizer.update(training, ids)
-        self._recognizer.save()
+        self._recognizer.save(self._trainer_file)
 
     def face_unlock(self, face: 'grayscale img'):
         if self._recognizer is None:
@@ -50,7 +63,7 @@ class UserID:
 
         _, distance = self._recognizer.predict(face)
 
-        if distance < 45:
+        if distance < config.MAX_DISTANCE:
             return True
 
         return False
