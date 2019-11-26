@@ -5,7 +5,7 @@ import config
 
 class UserID:
     def __init__(self, username: str):
-        self.username = username
+        self._username = username
 
         user_dir = UserID._user_dir(username)
         self._pswd_file = user_dir + 'password.txt'
@@ -19,6 +19,10 @@ class UserID:
             self._recognizer.read(self._trainer_file)
         else:
             self._recognizer = None
+
+    @property
+    def username(self):
+        return self._username
 
     @classmethod
     def register(cls, username: str, password: str):
@@ -42,7 +46,7 @@ class UserID:
 
     def create_recognizer(self, training=None):
         if self._recognizer is not None:
-            raise BaseException
+            raise BaseException('Recognizer exists already')
 
         self._recognizer = config.CREATE_RECOGNIZER()
 
@@ -51,7 +55,7 @@ class UserID:
 
     def update_recognizer(self, training: 'list of 2d arrays'):
         if self._recognizer is None:
-            raise BaseException
+            raise BaseException('Recognizer does not exist')
 
         ids = np.array([0 for _ in range(len(training))])
         self._recognizer.update(training, ids)
@@ -59,7 +63,7 @@ class UserID:
 
     def face_unlock(self, face: 'grayscale img'):
         if self._recognizer is None:
-            raise BaseException
+            raise BaseException('Recognizer does not exist')
 
         _, distance = self._recognizer.predict(face)
 
