@@ -3,7 +3,9 @@ import config
 
 
 class UserID:
-    def __init__(self, username):
+    def __init__(self, username: str):
+        self.username = username
+
         user_dir = UserID.user_dir(username)
         password_path = user_dir + 'password.txt'
         trainer_path = user_dir + 'trainer.yml'
@@ -18,7 +20,7 @@ class UserID:
             self.recognizer = None
 
     @classmethod
-    def register(cls, username, password):
+    def register(cls, username: str, password: str):
         user_dir = cls.user_dir(username)
 
         if not os.path.exists(user_dir):
@@ -30,7 +32,21 @@ class UserID:
         else:
             raise FileExistsError(f'Username {username} exists already')
 
+    def face_unlock(self, face: 'grayscale img'):
+        if self.recognizer is None:
+            raise BaseException
+
+        _, distance = self.recognizer.predict(face)
+
+        if distance < 45:
+            return True
+
+        return False
+
+    def password_unlock(self, password: str):
+        return self.password == password
+
     @staticmethod
-    def user_dir(username):
+    def user_dir(username: str):
         return config.USERS_DIR + username + '/'
 
