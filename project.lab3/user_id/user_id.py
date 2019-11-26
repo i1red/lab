@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import config
 
 
@@ -6,22 +7,22 @@ class UserID:
     def __init__(self, username: str):
         self.username = username
 
-        user_dir = UserID.user_dir(username)
-        password_path = user_dir + 'password.txt'
-        trainer_path = user_dir + 'trainer.yml'
+        user_dir = UserID._user_dir(username)
+        self._pswd_file = user_dir + 'password.txt'
+        self._trainer_file = user_dir + 'trainer.yml'
 
-        with open(password_path, 'r') as pswd:
-            self.password = pswd.readline()
+        with open(self._pswd_file, 'r') as pswd:
+            self._password = pswd.readline()
 
-        if os.path.exists(trainer_path):
-            self.recognizer = config.CREATE_RECOGNIZER()
-            self.recognizer.read(trainer_path)
+        if os.path.exists(self._trainer_file):
+            self._recognizer = config.CREATE_RECOGNIZER()
+            self._recognizer.read(self._trainer_file)
         else:
-            self.recognizer = None
+            self._recognizer = None
 
     @classmethod
     def register(cls, username: str, password: str):
-        user_dir = cls.user_dir(username)
+        user_dir = cls._user_dir(username)
 
         if not os.path.exists(user_dir):
             os.mkdir(user_dir)
@@ -32,11 +33,22 @@ class UserID:
         else:
             raise FileExistsError(f'Username {username} exists already')
 
+    def has_recognizer(self):
+        pass
+
+    def remove_recognizer(self):
+        self._recognizer = None
+
+    def update_recognizer(self, training: 'list of 2d arrays'):
+        ids = np.array([0 for _ in range(len(training))])
+        self._recognizer.update(training, ids)
+        self._recognizer.save()
+
     def face_unlock(self, face: 'grayscale img'):
-        if self.recognizer is None:
+        if self._recognizer is None:
             raise BaseException
 
-        _, distance = self.recognizer.predict(face)
+        _, distance = self._recognizer.predict(face)
 
         if distance < 45:
             return True
@@ -44,9 +56,9 @@ class UserID:
         return False
 
     def password_unlock(self, password: str):
-        return self.password == password
+        return self._password == password
 
     @staticmethod
-    def user_dir(username: str):
+    def _user_dir(username: str):
         return config.USERS_DIR + username + '/'
 
