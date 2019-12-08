@@ -15,7 +15,7 @@ class FileStats:
         self._permissionsOthers = permissions[7:]
         self._ownerName = pwd.getpwuid(fstats.st_uid).pw_name
         self._groupName = grp.getgrgid(fstats.st_gid).gr_name
-        self._fileSize = FileStats._convertFileSize(fstats.st_size)
+        self._fileSize = FileStats._convertFileSize(FileStats._dirSize(path))
         self._lastAccessed = time.ctime(fstats.st_atime)
         self._lastModified = time.ctime(fstats.st_mtime)
 
@@ -52,9 +52,20 @@ class FileStats:
         return self._lastModified
 
     @staticmethod
+    def _dirSize(path):
+        res = os.stat(path).st_size
+
+        if os.path.isdir(path):
+            for subDir in os.scandir(path):
+                res += FileStats._dirSize(subDir.path)
+
+        return res
+
+    @staticmethod
     def _convertFileSize(size):
         for unit in ['B','KiB','MiB','GiB','TiB']:
             if size < 1024.0:
                 break
             size /= 1024.0
         return f"{size:.{2}f}{unit}"
+
