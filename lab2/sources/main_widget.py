@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QInputDialog
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QInputDialog, QTableView
 from PyQt5.QtGui import QIcon
-from non_expandable_tree import NonExpandableTree
-from file_system import FileSysModel
+from non_expandable_tree_view import NonExpandableTree
+from file_system_model import FileSysModel
 from menu_action import MenuAction
 from fscommander import FileSystemCommander
 import fserror
+
 
 
 class MainWidget(QWidget):
@@ -46,7 +47,7 @@ class MainWidget(QWidget):
         newFile, confirmed = QInputDialog.getText(self, 'Create new file', 'File name: ')
         if confirmed:
             try:
-                FileSystemCommander.newFile(path + newFile)
+                FileSystemCommander.newFile(path + '/' + newFile)
             except fserror.CreateFileError:
                 MainWidget.trhowError(f'Can NOT create file {newFile}')
 
@@ -55,9 +56,9 @@ class MainWidget(QWidget):
         newFolder, confirmed = QInputDialog.getText(self, 'Create new folder', 'Folder name: ')
         if confirmed:
             try:
-                FileSystemCommander.newFolder(path + newFolder)
+                FileSystemCommander.newFolder(path + '/' + newFolder)
             except fserror.CreateFolderError:
-                MainWidget.trhowError(f'Can NOT create folder{newFolder}')
+                MainWidget.trhowError(f'Can NOT create folder {newFolder}')
 
     def rename_clicked(self):
         paths = self.getSelectedItemsPath()
@@ -125,7 +126,7 @@ class MainWidget(QWidget):
                 message.exec()
         elif fileInfo.isFile():
             try:
-                self.commander.openFile(fileInfo.absoluteFilePath())
+                FileSystemCommander.openFile(fileInfo.absoluteFilePath())
             except fserror.OpenFileError:
                 message = QMessageBox(QMessageBox.Critical, 'Can NOT open file', f'Can not open {fileInfo.fileName()}')
                 message.exec()
