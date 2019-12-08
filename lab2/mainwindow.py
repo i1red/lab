@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QFileSystemModel, QInputDialog
 from PyQt5.QtWidgets import QMessageBox
 from ui_mainwindow import Ui_MainWindow
-from fserror import *
+from fileerror import *
 import filecommands
 
 
@@ -169,3 +169,4 @@ class MainWindow(QMainWindow):
 
     def _getDestination(self):
         return self._model.fileInfo(self._ui.rightView.rootIndex()).absoluteFilePath()
+    

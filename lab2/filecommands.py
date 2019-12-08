@@ -1,9 +1,9 @@
 import shutil
 import subprocess
 import os
-import fserror
 import os.path
 import send2trash
+from fileerror import *
 
 
 ROOT_PATH = '/'
@@ -14,14 +14,14 @@ def newFile(path):
         f = open(path, 'w+')
         f.close()
     except Exception:
-        raise fserror.CreateFileError
+        raise CreateFileError
 
 
 def newFolder(path):
     try:
         os.mkdir(path)
     except Exception:
-        raise fserror.CreateFolderError
+        raise CreateFolderError
 
 
 def delete(path):
@@ -31,7 +31,7 @@ def delete(path):
         else:
             os.remove(path)
     except Exception:
-        raise fserror.DeleteFileError
+        raise DeleteFileError
 
 
 def copy(path, dst):
@@ -41,28 +41,28 @@ def copy(path, dst):
         else:
             shutil.copy2(path, dst, follow_symlinks=False)
     except Exception:
-        raise fserror.CopyFileError
+        raise CopyFileError
 
 
 def move(path, dst):
     try:
         shutil.move(path, dst)
     except Exception:
-        raise fserror.MoveFileError
+        raise MoveFileError
 
 
 def moveToTrash(path):
     try:
         send2trash.send2trash(path)
     except Exception:
-        raise fserror.MoveToTrashError
+        raise MoveToTrashError
 
 
 def openFile(path):
     try:
         subprocess.run(['xdg-open', path], check=True)
     except subprocess.CalledProcessError:
-        raise fserror.OpenFileError
+        raise OpenFileError
 
 
 def rename(path, newName):
@@ -72,4 +72,4 @@ def rename(path, newName):
     try:
         shutil.move(path, newPath)
     except Exception:
-        raise fserror.RenameFileError
+        raise RenameFileError
