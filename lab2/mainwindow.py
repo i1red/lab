@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QFileSystemModel, QInputDialog
 from PyQt5.QtWidgets import QMessageBox
-from ui_mainwindow import Ui_MainWindow
+from ui import Ui_MainWindow
 from fileerror import *
+from properties import PropertiesDialog
 import filecommands
 
 
@@ -34,7 +35,7 @@ class MainWindow(QMainWindow):
     def _setUpActions(self):
         self._ui.actionNewFile.triggered.connect(self._newFile_triggered)
         self._ui.actionNewFolder.triggered.connect(self._newFolder_triggered)
-        self._ui.actionRename.triggered.connect(self._rename_triggered)
+        self._ui.actionRename.triggered.connect(self._properties_triggered)
         self._ui.actionMove.triggered.connect(self._move_triggered)
         self._ui.actionCopy.triggered.connect(self._copy_triggered)
         self._ui.actionToTrash.triggered.connect(self._toTrash_triggered)
@@ -68,19 +69,13 @@ class MainWindow(QMainWindow):
             except CreateFolderError:
                 throwError(f'Can NOT create folder {newFolder}')
 
-    def _rename_triggered(self):
-        print('rename')
+    def _properties_triggered(self):
+        print('properties')
         paths = self._getSelectedItemsPath()
 
         for path in paths:
-            pathTree = path.split('/')
-            name = pathTree[-1]
-            newName, confirmed = QInputDialog.getText(self, 'Rename file/folder', f'Rename {name} to:')
-            if confirmed:
-                try:
-                    filecommands.rename(path, newName)
-                except RenameFileError:
-                    throwError(f'Can NOT rename {name} to {newName}')
+            dialog = PropertiesDialog(path)
+            dialog.exec_()
 
     def _move_triggered(self):
         print('move')
@@ -169,4 +164,3 @@ class MainWindow(QMainWindow):
 
     def _getDestination(self):
         return self._model.fileInfo(self._ui.rightView.rootIndex()).absoluteFilePath()
-    
