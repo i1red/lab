@@ -65,11 +65,8 @@ def openFile(path):
         raise OpenFileError
 
 
-def rename(path, newName):
-    pathTree = path.split('/')
-    pathTree[-1] = newName
-    newPath = '/'.join(pathTree)
+def rename(oldPath, newPath):
     try:
-        shutil.move(path, newPath)
+        shutil.move(oldPath, newPath)
     except Exception:
         raise RenameFileError
