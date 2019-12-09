@@ -7,6 +7,7 @@ Unit testing<br/>
 <br/>
 Lab2:<br/>
 Offline file manager<br/>
+Dividing view and implementation(model/view programming)<br/>
 Libraries/frameworks: PyQt5, send2trash<br/>
 <br/>
 Lab3/project:<br/>
