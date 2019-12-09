@@ -4,6 +4,7 @@ import pwd
 import time
 import stat
 import subprocess
+from filecommands import rename
 
 
 class FileStats:
@@ -17,9 +18,9 @@ class FileStats:
         self._dir = '/' + '/'.join(splitPath) + ('/' if len(splitPath) > 0 else '')
 
         self._isDir = permissions[0] == 'd'
-        self._permissionsOwner = tuple(permissions[1:4])
-        self._permissionsGroup = tuple(permissions[4:7])
-        self._permissionsOthers = tuple(permissions[7:])
+        self._permissionsOwner = tuple(permissions[1:3])
+        self._permissionsGroup = tuple(permissions[4:6])
+        self._permissionsOthers = tuple(permissions[7:9])
 
         self._ownerName = pwd.getpwuid(fstats.st_uid).pw_name
         self._groupName = grp.getgrgid(fstats.st_gid).gr_name
@@ -46,11 +47,7 @@ class FileStats:
 
     @permissionsOwner.setter
     def permissionsOwner(self, permissions):
-        if permissions != self._permissionsOwner:
-            try:
-                subprocess.run([f'chmod u+{"".join(permissions)}', self._path()], check=True)
-            except subprocess.CalledProcessError:
-                pass
+        self._changePermissions(self._permissionsOwner, permissions, 'u')
 
     @property
     def permissionsGroup(self):
@@ -58,11 +55,7 @@ class FileStats:
 
     @permissionsGroup.setter
     def permissionsGroup(self, permissions):
-        if permissions != self._permissionsGroup:
-            try:
-                subprocess.run([f'chmod g+{"".join(permissions)}', self._path()], check=True)
-            except subprocess.CalledProcessError:
-                pass
+        self._changePermissions(self._permissionsGroup, permissions, 'g')
 
     @property
     def permissionsOthers(self):
@@ -70,27 +63,35 @@ class FileStats:
 
     @permissionsOthers.setter
     def permissionsOthers(self, permissions):
-        if permissions != self._permissionsOthers:
-            try:
-                subprocess.run([f'chmod o+{"".join(permissions)}', self._path()], check=True)
-            except subprocess.CalledProcessError:
-                pass
+        self._changePermissions(self._permissionsOthers, permissions, 'o')
 
     @property
     def groupName(self):
         return self._groupName
 
-    @property
     def fileSize(self):
         return self._fileSize
 
-    @property
     def lastAccessed(self):
         return self._lastAccessed
 
-    @property
     def lastModified(self):
         return self._lastModified
+
+    def _changePermissions(self, oldPerm, newPerm, letter):
+        if newPerm[0] != oldPerm[0]:
+            try:
+                subprocess.run([f'chmod {letter}{"+" if newPerm[0] == "r" else "-"}r', self._path()], check=True)
+            except subprocess.CalledProcessError:
+                pass
+
+        if newPerm[1] != oldPerm[1]:
+            try:
+                subprocess.run([f'chmod {letter}{"+" if newPerm[1] == "w" else "-"}w', self._path()], check=True)
+            except subprocess.CalledProcessError:
+                pass
+
+        oldPerm = newPerm
 
     @staticmethod
     def _dirSize(path):
