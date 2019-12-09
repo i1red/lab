@@ -3,7 +3,7 @@ import grp
 import pwd
 import time
 import stat
-import subprocess
+import filecommands
 
 
 class FileStats:
@@ -14,13 +14,10 @@ class FileStats:
 
         self._name = splitPath[-1]
         splitPath.pop()
-        self._dir = '/' + '/'.join(splitPath) + ('/' if len(splitPath) > 0 else '')
+        self._dir = '/'.join(splitPath) + ('/' if len(splitPath) > 0 else '')
 
         self._isDir = permissions[0] == 'd'
-        self._permissionsOwner = tuple(permissions[1:3])
-        self._permissionsGroup = tuple(permissions[4:6])
-        self._permissionsOthers = tuple(permissions[7:9])
-
+        self._permissions = permissions[1:]
         self._ownerName = pwd.getpwuid(fstats.st_uid).pw_name
         self._groupName = grp.getgrgid(fstats.st_gid).gr_name
 
@@ -37,32 +34,33 @@ class FileStats:
     def name(self):
         return self._name
 
+    @name.setter
+    def name(self, newName):
+        newPath = self._dir + newName
+        filecommands.rename(self._path(), newPath)
+
     def _path(self):
         return self._dir + self.name
 
     @property
-    def permissionsOwner(self):
-        return self._permissionsOwner
+    def permissions(self):
+        return self._permissions
 
-    @permissionsOwner.setter
-    def permissionsOwner(self, permissions):
-        self._changePermissions(self._permissionsOwner, permissions, 'u')
+    @permissions.setter
+    def permissions(self, permissions):
+        if self.permissions != permissions:
+            mode = '0o'
+            for perm in [permissions[:3], permissions[3:6], permissions[6:]]:
+                tmp = 0
+                for i, sym in enumerate(reversed(perm)):
+                    if sym != '-':
+                        tmp += 2 ** i
+                mode += str(tmp)
+            os.chmod(self._path(), int(mode, 8))
 
-    @property
-    def permissionsGroup(self):
-        return self._permissionsGroup
-
-    @permissionsGroup.setter
-    def permissionsGroup(self, permissions):
-        self._changePermissions(self._permissionsGroup, permissions, 'g')
-
-    @property
-    def permissionsOthers(self):
-        return self._permissionsOthers
-
-    @permissionsOthers.setter
-    def permissionsOthers(self, permissions):
-        self._changePermissions(self._permissionsOthers, permissions, 'o')
+    def setPermissions(self, owner, group, others):
+        newPermissions = owner + self.permissions[2] + group + self.permissions[5] + others + self.permissions[8]
+        self.permissions = newPermissions
 
     @property
     def groupName(self):
@@ -77,37 +75,23 @@ class FileStats:
     def lastModified(self):
         return self._lastModified
 
-    def _changePermissions(self, oldPerms, newPerms, who):
-        self._changePerm(oldPerms[0], newPerms[0], who)
-        self._changePerm(oldPerms[0], newPerms[0], who)
-
-        oldPerms = newPerms
-
-    def _changePerm(self, oldPerm, newPerm, who):
-        if oldPerm != newPerm:
-            permType, sign = (oldPerm, '-') if oldPerm != '-' else (newPerm, '+')
-            try:
-                command = f'chmod {who}{sign}{permType}'
-                print(command)
-                subprocess.run([command, self._path()], check=True)
-            except subprocess.CalledProcessError:
-                pass
-
     @staticmethod
     def _dirSize(path):
         res = os.stat(path).st_size
 
         if os.path.isdir(path):
             for subDir in os.scandir(path):
-                res += FileStats._dirSize(subDir.path)
+                if os.path.exists(subDir.path) and os.access(subDir.path, os.R_OK) and not os.path.islink(path):
+                    res += FileStats._dirSize(subDir.path)
 
         return res
 
     @staticmethod
     def _convertFileSize(size):
-        for unit in ['B','KiB','MiB','GiB','TiB']:
+        for unit in [' B',' KiB',' MiB',' GiB',' TiB']:
             if size < 1024.0:
                 break
             size /= 1024.0
         return f"{size:.{2}f}{unit}"
+
 

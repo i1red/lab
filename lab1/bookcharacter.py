@@ -4,10 +4,12 @@ import reprlib
 
 Book = namedtuple('Book', ['title', 'authors', 'release_date', 'size', 'annotation'])
 
+
 class CharacterRole(Enum):
     FLAT = 0
     SECONDARY = 1
     MAIN = 2
+
 
 class BookCharacter:
     def __init__(self, names: list, reffered_books: list):
