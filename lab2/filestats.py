@@ -4,7 +4,6 @@ import pwd
 import time
 import stat
 import subprocess
-from filecommands import rename
 
 
 class FileStats:
@@ -78,20 +77,21 @@ class FileStats:
     def lastModified(self):
         return self._lastModified
 
-    def _changePermissions(self, oldPerm, newPerm, letter):
-        if newPerm[0] != oldPerm[0]:
+    def _changePermissions(self, oldPerms, newPerms, who):
+        self._changePerm(oldPerms[0], newPerms[0], who)
+        self._changePerm(oldPerms[0], newPerms[0], who)
+
+        oldPerms = newPerms
+
+    def _changePerm(self, oldPerm, newPerm, who):
+        if oldPerm != newPerm:
+            permType, sign = (oldPerm, '-') if oldPerm != '-' else (newPerm, '+')
             try:
-                subprocess.run([f'chmod {letter}{"+" if newPerm[0] == "r" else "-"}r', self._path()], check=True)
+                command = f'chmod {who}{sign}{permType}'
+                print(command)
+                subprocess.run([command, self._path()], check=True)
             except subprocess.CalledProcessError:
                 pass
-
-        if newPerm[1] != oldPerm[1]:
-            try:
-                subprocess.run([f'chmod {letter}{"+" if newPerm[1] == "w" else "-"}w', self._path()], check=True)
-            except subprocess.CalledProcessError:
-                pass
-
-        oldPerm = newPerm
 
     @staticmethod
     def _dirSize(path):
