@@ -1,7 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from mainwindow import MainWindow
-from filestats import FileStats
 
 
 if __name__ == '__main__':
