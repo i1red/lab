@@ -152,7 +152,8 @@ class MainWindow(QMainWindow):
 
     def _goBack(self, view):
         index = view.rootIndex()
-        view.setRootIndex(index.parent())
+        if index != self._model.index(filecommands.ROOT_PATH):
+            view.setRootIndex(index.parent())
 
     def _goHome(self, view):
         view.setRootIndex(self._model.index(filecommands.ROOT_PATH))
