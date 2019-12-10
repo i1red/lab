@@ -133,11 +133,12 @@ class MainWindow(QMainWindow):
 
     def _view_doubleClicked(self, index):
         view = self.sender()
-        fileInfo = self._model.fileInfo(index)
+        firstColumnIndex = index.siblingAtColumn(0)
+        fileInfo = self._model.fileInfo(firstColumnIndex)
 
         if fileInfo.isDir():
             if fileInfo.isReadable():
-                view.setRootIndex(index)
+                view.setRootIndex(firstColumnIndex)
             else:
                 message = QMessageBox(QMessageBox.Critical, 'Permission denied',
                                       f'Folder {fileInfo.fileName()} is not readable!')
