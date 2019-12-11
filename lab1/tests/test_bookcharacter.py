@@ -1,6 +1,6 @@
 import unittest
 import random
-import string
+from demo import random_book
 from bookcharacter import *
 
 
@@ -64,23 +64,8 @@ class TestBookCharacter(unittest.TestCase):
         random_books = []
         expected_books = []
 
-        random_str = lambda l: random.choice(string.ascii_uppercase) + ''.join(string.ascii_lowercase for _ in range(l))
-
         for _ in range(20):
-            title_len = random.randint(3, 50)
-            title = random_str(title_len)
-
-            authors_number = random.randint(1, 3)
-            authors = [random_str(random.randint(5, 20)) for _ in range(authors_number)]
-
-            release_year = random.randint(-300, 2019)
-
-            size = random.randint(28, 6821)
-
-            annotation_len = random.randint(0, 80)
-            annotation = random_str(annotation_len)
-
-            book = Book(title, authors, release_year, size, annotation)
+            book = random_book()
 
             role = random.randint(0, 2)
 
