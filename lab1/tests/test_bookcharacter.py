@@ -6,29 +6,30 @@ from lab1.bookcharacter import *
 
 class TestBookCharacter(unittest.TestCase):
     def setUp(self) -> None:
-        self.ref_books = [(Book('Exam cheating', ['Students'], 1972, 10758, "Describes student's life when session comes"),
+        self.ref_books = [(Book('Exam cheating', ['Students'], 1972, 10758, "When session comes"),
                            CharacterRole.MAIN),
                           (Book('Lack of sleeping', ['People over 10'], 1421, 23, 'zzzzzzZZZZ...'),
                            CharacterRole.MAIN),
-                          (Book('Studying', ['Straight A students', 'I do not know who else'], 2009, 12121,
-                           'OOP fundamentals, algorithms and extreme complexity...'), CharacterRole.FLAT)]
-        self.vanya_names = ['Vanya', 'Guy who doing labs', 'Nice fellow']
+                          (Book('Studying', ['Straight A students'], 2009, 12121, 'OOP, algorithms'),
+                           CharacterRole.FLAT)]
+        self.vanya_names = ['Vanya', 'Nice fellow']
         self.vanya = BookCharacter(self.vanya_names, self.ref_books)
 
     def test_init(self):
         initial_names = ['Luchano', 'Luigi']
         initial_books = [(Book('test book', ['test author'], 22, 1, 'tralala'), CharacterRole.FLAT)]
         luchano = BookCharacter(initial_names, initial_books)
+
         self.assertEqual(luchano.names, initial_names)
         self.assertEqual(luchano.referred_books, initial_books)
 
     def test_add_book(self):
-        lotr = [(Book('The Lord of the Rings: The Fellowship of the Ring', ['J. R. R. Tolkien'], 1954, 479,
-                     'The first part of a legendary trilogy'), CharacterRole.MAIN),
-                (Book('The lord of the Rings: The Two Towers', ['J. R. R. Tolkien'], 1954, 372,
-                     'The second part of a legendary trilogy'), CharacterRole.MAIN),
-                (Book('The lord of the Rings: The Return of the King', ['J. R. R. Tolkien'], 1955, 487,
-                     'The third part of a legendary trilogy'), CharacterRole.MAIN)]
+        lotr = [(Book('LOTR: The Fellowship of the Ring', ['J. R. R. Tolkien'], 1954, 479, '1st part'),
+                 CharacterRole.MAIN),
+                (Book('LOTR: The Two Towers', ['J. R. R. Tolkien'], 1954, 372, '2nd part'),
+                 CharacterRole.MAIN),
+                (Book('LOTR: The Return of the King', ['J. R. R. Tolkien'], 1955, 487, '3rd part'),
+                 CharacterRole.MAIN)]
 
         aragorn = BookCharacter(['Aragorn'], [lotr[0]])
         aragorn.add_book(*lotr[1])
@@ -47,17 +48,17 @@ class TestBookCharacter(unittest.TestCase):
         self.assertEqual(jon_snow.names, expected_names)
 
     def test_str(self):
-        expected_str_vanya = 'Book character, known as Vanya, Guy who doing labs, Nice fellow. ' \
+        expected_str_vanya = 'Book character, known as Vanya, Nice fellow. ' \
                        'Referred books: "Exam cheating" by Students; "Lack of sleeping" by People over 10; ' \
-                       '"Studying" by Straight A students, I do not know who else'
+                       '"Studying" by Straight A students'
 
         self.assertEqual(str(self.vanya), expected_str_vanya)
 
     def test_repr(self):
-        expected_repr1_vanya = f'BookCharacter([\'Vanya\', \'Guy who doing labs\', ...], [{reprlib.repr(self.ref_books[0])}, ' \
+        expected_repr1_vanya = f'BookCharacter([\'Vanya\', \'Nice fellow\'], [{reprlib.repr(self.ref_books[0])}, ' \
                                f'{reprlib.repr(self.ref_books[1])}, ...])'
 
-        self.assertEqual(repr(self.vanya), expected_repr1_vanya)
+        self.assertEqual(expected_repr1_vanya, repr(self.vanya))
 
     def test_serialize_books(self):
         random_books = []
