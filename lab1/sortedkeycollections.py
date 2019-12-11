@@ -178,10 +178,10 @@ class AVLTree:
 
 class SortedKeyList:
     class Node:
-        def __init__(self, key, value, nx=None):
+        def __init__(self, key, value, next=None):
             self.key = key
             self.value = value
-            self.nx = nx
+            self.next = next
 
     def __init__(self):
         self._head = None
@@ -203,9 +203,9 @@ class SortedKeyList:
             self._head = SortedKeyList.Node(key, value, self._head)
         else:
             tmp = self._head
-            while tmp.nx is not None and tmp.nx.key <= key:
-                tmp = tmp.nx
-            tmp.nx = SortedKeyList.Node(key, value, tmp.nx)
+            while tmp.next is not None and tmp.next.key <= key:
+                tmp = tmp.next
+            tmp.next = SortedKeyList.Node(key, value, tmp.next)
 
         self._length += 1
 
