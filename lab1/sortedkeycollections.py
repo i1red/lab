@@ -221,19 +221,20 @@ class SortedKeyList:
 
 class SortedArrayList:
     def __init__(self):
+        #elements in self._container are in reversed order(to make popleft more effiecient)
         self._container = []
 
     def __len__(self):
         return len(self._container)
 
     def __iter__(self):
-        return iter(self._container)
+        return reversed(self._container)
 
     def insert(self, key, value):
         self._container.append((key, value))
 
         i = len(self) - 1
-        while i > 0 and self._container[i][0] < self._container[i - 1][0]:
+        while i > 0 and self._container[i][0] >= self._container[i - 1][0]:
             self._container[i], self._container[i - 1] = self._container[i - 1], self._container[i]
             i -= 1
 
@@ -241,7 +242,7 @@ class SortedArrayList:
         if len(self) == 0:
             raise KeyError('Pop from empty list')
 
-        return self._container.pop(0)
+        return self._container.pop()
 
 
 
