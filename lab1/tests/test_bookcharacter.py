@@ -1,7 +1,7 @@
 import unittest
 import random
 import string
-from lab1.bookcharacter import *
+from bookcharacter import *
 
 
 class TestBookCharacter(unittest.TestCase):

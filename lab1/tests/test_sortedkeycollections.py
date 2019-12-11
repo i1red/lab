@@ -1,6 +1,6 @@
 import unittest
 import random
-from lab1.sortedkeycollections import AVLTree, SortedKeyList, SortedArrayList
+from sortedkeycollections import AVLTree, SortedKeyList, SortedArrayList
 
 
 class TestSortedKeyList(unittest.TestCase):

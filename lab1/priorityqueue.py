@@ -1,5 +1,5 @@
 import reprlib
-import lab1.sortedkeycollections as skcollections
+import sortedkeycollections as skcollections
 import queue
 
 

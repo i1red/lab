@@ -1,6 +1,6 @@
 import unittest
-from lab1.priorityqueue import *
-from lab1.sortedkeycollections import SortedKeyList
+from priorityqueue import *
+from sortedkeycollections import SortedKeyList
 
 
 class TestPriorityQueue(unittest.TestCase):
