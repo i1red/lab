@@ -194,7 +194,7 @@ class SortedKeyList:
         tmp = self._head
         while tmp is not None:
             yield (tmp.key, tmp.value)
-            tmp = tmp.nx
+            tmp = tmp.next
 
     def insert(self, key, value):
         if self._head is None:
@@ -214,7 +214,7 @@ class SortedKeyList:
             raise KeyError('Pop from empty list')
 
         key_value = (self._head.key, self._head.value)
-        self._head = self._head.nx
+        self._head = self._head.next
         self._length -= 1
         return key_value
 
