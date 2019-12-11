@@ -1,4 +1,5 @@
 import collections
+import bisect
 
 
 class AVLTree:
@@ -217,5 +218,32 @@ class SortedKeyList:
         self._head = self._head.next
         self._length -= 1
         return key_value
+
+
+class SortedArrayList:
+    def __init__(self):
+        self._container = []
+
+    def __len__(self):
+        return len(self._container)
+
+    def __iter__(self):
+        return iter(self._container)
+
+    def insert(self, key, value):
+        self._container.append((key, value))
+
+        i = len(self) - 1
+        while i > 0 and self._container[i][0] < self._container[i - 1][0]:
+            self._container[i], self._container[i - 1] = self._container[i - 1], self._container[i]
+            i -= 1
+
+    def popleft(self):
+        if len(self) == 0:
+            raise KeyError('Pop from empty list')
+
+        return self._container.pop(0)
+
+
 
 

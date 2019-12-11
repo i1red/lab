@@ -1,6 +1,6 @@
 import unittest
 import random
-from lab1.sortedkeycollections import AVLTree, SortedKeyList
+from lab1.sortedkeycollections import AVLTree, SortedKeyList, SortedArrayList
 
 
 class TestSortedKeyList(unittest.TestCase):
@@ -48,6 +48,11 @@ class TestSortedKeyList(unittest.TestCase):
     def test_popleft_exception(self):
         collection = self.test_class()
         self.assertRaises(KeyError, lambda: collection.popleft())
+
+
+class TestSortedArrayList(TestSortedKeyList):
+    def setUp(self):
+        self.test_class = SortedArrayList
 
 
 class TestAVLTree(TestSortedKeyList):
