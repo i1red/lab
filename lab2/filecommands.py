@@ -58,7 +58,7 @@ def moveToTrash(path):
         raise MoveToTrashError
 
 
-def openFile(path):
+def openWithDefaultApp(path):
     try:
         subprocess.run(['xdg-open', path], check=True)
     except subprocess.CalledProcessError:

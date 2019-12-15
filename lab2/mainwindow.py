@@ -35,11 +35,12 @@ class MainWindow(QMainWindow):
     def _setUpActions(self):
         self._ui.actionNewFile.triggered.connect(self._newFile_triggered)
         self._ui.actionNewFolder.triggered.connect(self._newFolder_triggered)
-        self._ui.actionRename.triggered.connect(self._properties_triggered)
+        self._ui.actionProperties.triggered.connect(self._properties_triggered)
         self._ui.actionMove.triggered.connect(self._move_triggered)
         self._ui.actionCopy.triggered.connect(self._copy_triggered)
         self._ui.actionToTrash.triggered.connect(self._toTrash_triggered)
         self._ui.actionDelete.triggered.connect(self._delete_triggered)
+        self._ui.actionOpenDefaultApp.triggered.connect(self._defaultApp_triggered)
 
     def _setUpButtons(self):
         self._ui.leftBackButton.clicked.connect(self._leftBack_clicked)
@@ -119,6 +120,16 @@ class MainWindow(QMainWindow):
             except DeleteFileError:
                 throwError(f'Can NOT delete {path}')
 
+    def _defaultApp_triggered(self):
+        print('default')
+        paths = self._getSelectedItemsPath()
+
+        for path in paths:
+            try:
+                filecommands.openWithDefaultApp(path)
+            except OpenFileError:
+                throwError(f'Can NOT open {path} with default app')
+
     def _leftBack_clicked(self):
         self._goBack(self._ui.leftView)
 
@@ -145,7 +156,7 @@ class MainWindow(QMainWindow):
                 message.exec()
         elif fileInfo.isFile():
             try:
-                filecommands.openFile(fileInfo.absoluteFilePath())
+                filecommands.openWithDefaultApp(fileInfo.absoluteFilePath())
             except OpenFileError:
                 message = QMessageBox(QMessageBox.Critical, 'Can NOT open file', f'Can not open {fileInfo.fileName()}')
                 message.exec()
