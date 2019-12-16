@@ -85,6 +85,14 @@ class UserID:
 
         return False
 
+    def face_unlock_img_seq(self, imgs):
+        for img in imgs:
+            face = imgtools.detect_face(img)
+            if face is not None and self.face_unlock(face):
+                return True
+
+        return False
+
     def password_unlock(self, password: str):
         return self._password == password
 
