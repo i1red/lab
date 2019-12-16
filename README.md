@@ -16,5 +16,6 @@ UserID class that works with data for a single user<br/>
 An object of this class can identify if a user on photo or not<br/>
 Report was sent via Telegram<br/>
 Libraries: OpenCV, numpy(goes with OpenCV)<br/>
+Unit testing<br/>
 
 
