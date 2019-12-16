@@ -4,12 +4,12 @@ from filestats import FileStats
 
 
 class PropertiesDialog(QDialog):
-    def __init__(self, path):
+    def __init__(self, path, changeIfExists):
         super().__init__()
         self._ui = Ui_PropertiesDialog()
         self._ui.setupUi(self)
 
-        self._filestats = FileStats(path)
+        self._filestats = FileStats(path, changeIfExists)
         self._ui.lineEditName.setText(self._filestats.name)
         self._setUpComboBoxes()
         self._selUpLabels()

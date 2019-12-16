@@ -7,10 +7,11 @@ import filecommands
 
 
 class FileStats:
-    def __init__(self, path):
+    def __init__(self, path, changeIfExists):
         fstats = os.stat(path)
         permissions = stat.filemode(fstats.st_mode)
         splitPath = path.split('/')
+        self._changeIfExists = changeIfExists
 
         self._name = splitPath[-1]
         splitPath.pop()
@@ -37,7 +38,7 @@ class FileStats:
     @name.setter
     def name(self, newName):
         newPath = self._dir + newName
-        filecommands.rename(self._path(), newPath)
+        filecommands.rename(self._path(), newPath, self._changeIfExists)
 
     def _path(self):
         return self._dir + self.name

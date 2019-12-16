@@ -11,6 +11,24 @@ def throwError(text):
     message.exec()
 
 
+def changeIfExists(text):
+    message = QMessageBox(QMessageBox.Warning, 'Warning',
+                          f'{text} already exists.'
+                          f'\n-Would you like to make a copy(..)? Click Yes'
+                          f'\n-To change files/folders click Ignore'
+                          f'\n-To discard action click Cancel',
+                          QMessageBox.Yes | QMessageBox.Ignore | QMessageBox.Cancel)
+
+    execRes = message.exec()
+    if execRes == QMessageBox.Yes:
+        return 2
+    if execRes == QMessageBox.Ignore:
+        return 1
+
+    return 0
+
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -55,7 +73,7 @@ class MainWindow(QMainWindow):
 
         if confirmed:
             try:
-                filecommands.newFile(path + '/' + newFile)
+                filecommands.newFile(path + '/' + newFile, changeIfExists)
             except CreateFileError:
                 throwError(f'Can NOT create file {newFile}')
 
@@ -66,7 +84,7 @@ class MainWindow(QMainWindow):
 
         if confirmed:
             try:
-                filecommands.newFolder(path + '/' + newFolder)
+                filecommands.newFolder(path + '/' + newFolder, changeIfExists)
             except CreateFolderError:
                 throwError(f'Can NOT create folder {newFolder}')
 
@@ -75,7 +93,7 @@ class MainWindow(QMainWindow):
         paths = self._getSelectedItemsPath()
 
         for path in paths:
-            dialog = PropertiesDialog(path)
+            dialog = PropertiesDialog(path, changeIfExists)
             dialog.exec_()
 
     def _move_triggered(self):
@@ -85,7 +103,7 @@ class MainWindow(QMainWindow):
 
         for path in paths:
             try:
-                filecommands.move(path, dst)
+                filecommands.move(path, dst, changeIfExists)
             except MoveFileError:
                 throwError(f'Can NOT move {path} to {dst}')
 
@@ -96,7 +114,7 @@ class MainWindow(QMainWindow):
 
         for path in paths:
             try:
-                filecommands.copy(path, dst)
+                filecommands.copy(path, dst, changeIfExists)
             except CopyFileError:
                 throwError(f'Can NOT copy {path} to {dst}')
 
