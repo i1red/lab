@@ -1,6 +1,19 @@
 import os
 import numpy as np
 import config
+import shutil
+import imgtools
+
+
+def create_training(frames_seq):
+    training = []
+    for img in frames_seq:
+        face = imgtools.detect_face(img)
+
+        if face is not None:
+            training.append(np.array(face, 'uint8'))
+
+    return training
 
 
 class UserID:
@@ -74,6 +87,10 @@ class UserID:
 
     def password_unlock(self, password: str):
         return self._password == password
+
+    @staticmethod
+    def delete(username):
+        shutil.rmtree(UserID._user_dir(username))
 
     @staticmethod
     def _user_dir(username: str):

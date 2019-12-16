@@ -1,5 +1,6 @@
 import cv2 as cv
 import time
+import os
 import config
 
 
@@ -24,6 +25,11 @@ def detect_face(img):
     face_roi = cv.resize(face_roi, config.FACE_SIZE, interpolation=cv.INTER_AREA)
 
     return face_roi
+
+
+def folder_read(path):
+    for img in os.scandir(path):
+        yield cv.imread(img.path)
 
 
 def camera_read(frames_limit: int = 0, time_limit: float = 0, show_frames=True):

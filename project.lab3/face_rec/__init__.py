@@ -1,1 +1,1 @@
-from face_rec import *
+from face_rec import imgtools, userid
