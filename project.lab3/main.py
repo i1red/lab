@@ -1,6 +1,7 @@
-from face_rec.imgtools import camera_read, detect_face
+from face_rec.imgtools import camera_read
 from face_rec.userid import UserID, create_training
 from uuid import uuid4
+import cv2
 
 
 def demo_create_user(frame_count_trainer, time_to_recognize):
@@ -14,3 +15,4 @@ def demo_create_user(frame_count_trainer, time_to_recognize):
 
 if __name__ == '__main__':
     demo_create_user(30, 5)
+

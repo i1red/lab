@@ -7,5 +7,5 @@ USERS_DIR =  '/'.join(os.path.join(os.path.dirname(__file__), '').split('/')[:-2
 FACE_SIZE = (140, 140)
 FACE_CASCADE = haarcascades + 'haarcascade_frontalface_alt2.xml'
 CREATE_RECOGNIZER = LBPHFaceRecognizer_create
-MAX_DISTANCE = 45
+MAX_DISTANCE = 65
 
